@@ -60,29 +60,96 @@
         <h2>장바구니</h2>
         <form action="">
             <div class="cart_box">
-                <div class="item">
+                <div class="item" id="c_11"  data-idx="11">
+            		<input type="hidden" name="c_id" value="11">
+                    <input type="hidden" class="p_price" name="p_price" value="11">
                     <div class="img">
                         <img src="data/cart_img1.webp" alt="">
                     </div>
                     <span class="name"><a href="#">참크레커</a></span>
                     <div class="count">
-                        <input type="number">
+									<button type="button" data-idx="11" class="down">-</button><input type="number" class="cnt"
+                           value="1" readonly><button type="button" data-idx="11"class="up">+</button>
                     </div>
-                    <span class="pay">19,000원</span>
-                    <span>X</span>
+                    <span class="pay"><span class="cost">19,000</span>원</span>
+                    <span class="close" data-idx="2">X</span>
                 </div>
             </div>
             <div class="inner_result">
-                <div><span>상품금액</span><span>19,000원</span></div>
+                <div><span>상품금액</span><span class="total">19,000원</span></div>
                 <div><span>상품할인금액</span><span>-1,000원</span></div>
                 <div><span>배송비</span><span>+3,000원</span></div>
-                <div class="sp"><span>결제예정금액</span><span>21,000원</span></div>
+                <div class="sp"><span>결제예정금액</span><span class="final">21,000원</span></div>
                 <div><button>결제하기</button></div>
             </div>
         </form>
     </section>
+    <script>
+        calc();
+            document.querySelector(".down").addEventListener("click", (e) => {
+                let data = e.target.dataset.idx;
+                let cnt = document.querySelector("#c_11 .cnt").value;
+                let price = document.querySelector("#c_11 .p_price").value;
+                if (cnt == 1) {
+                    alert("수량은 최소 1개 이상이여야 합니다.");
+                    return;
+                }
+                cnt--;
+                document.querySelector("#c_11 .cnt").value = cnt;
+                let str = cnt * price;
+                document.querySelector("#c_11 .cost").innerHTML = str.toLocaleString();
+                calc();
+            });
+            document.querySelector(".up").addEventListener("click", (e) => {
+                let data = e.target.dataset.idx;
+                let cnt = document.querySelector("#c_11 .cnt").value;
+                let price = document.querySelector("#c_11 .p_price").value;
+                if (cnt == 100) {
+                    alert("수량은 최대 100개 까지입니다.");
+                    return;
+                }
+                cnt++;
+                document.querySelector("#c_11 .cnt").value = cnt;
+                let str = cnt * price;
+                document.querySelector("#c_11 .cost").innerHTML = str.toLocaleString();
+                calc();
+            });
+
+            function calc(){
+                let dom = document.querySelectorAll(".item");
+                let total = 0;
+                let cnt;
+                let price;
+                for(let item of dom) {
+                    console.log(item);
+                    cnt = item.querySelector(".cnt").value;
+                    price = item.querySelector(".p_price").value;
+                    total = total + (cnt*price);
+                }
+                document.querySelector(".total").innerHTML = total.toLocaleString();
+                document.querySelector(".total").dataset.money = total;
+                document.querySelector(".final").innerHTML = (total+3000).toLocaleString();
+            }
+
+            function mod(data,cnt) {
+                $.ajax(
+                    {
+                        type: "POST",
+                        url: "/ajax/mod_cart",
+                        data: { 
+                                "c_id": data,
+                                "cnt":cnt
+                              },
+                        dataType: "json",
+                        success: res => {
+
+                        }, error: log => { console.log("실패" + log) }
+                    }
+                )
+            }
 
 
+    </script>
     <footer>
         <div>
             <ul>
