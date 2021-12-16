@@ -147,7 +147,22 @@
                     }
                 )
             }
-
+            function del(data) {
+                $.ajax(
+                    {
+                        type: "POST",
+                        url: "/ajax/del_cart",
+                        data: { 
+                                "c_id": data,
+                                "true":true
+                              },
+                        dataType: "json",
+                        success: res => {
+                            
+                        }, error: log => { console.log("실패" + log) }
+                    }
+                )
+            }
 
     </script>
     <footer>
